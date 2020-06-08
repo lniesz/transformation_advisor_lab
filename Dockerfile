@@ -23,7 +23,8 @@ RUN mkdir -p /config/apps && \
         cp ./src/main/liberty/lib/* /sharedlibs; \
     fi
 
-FROM open-liberty:kernel-java8-openj9
+# FROM open-liberty:kernel-java8-openj9
+FROM ibmcom/websphere-liberty:kernel-java8-ibmjava-ubi
 
 ARG SSL=true
 
@@ -33,6 +34,9 @@ ARG HTTP_ENDPOINT=false
 RUN mkdir -p /opt/ol/wlp/usr/shared/config/lib/global
 COPY --chown=1001:0 --from=build-stage /config/ /config/
 COPY --chown=1001:0 --from=build-stage /sharedlibs/ /opt/ol/wlp/usr/shared/config/lib/global
+
+RUN mkdir -p /config/databases/PLANTSDB
+COPY --chown=1001:0 Dockerfile ./PLANTSDB/ /config/databases/PLANTSDB/
 
 USER root
 RUN configure.sh
